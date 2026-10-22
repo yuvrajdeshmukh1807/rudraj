@@ -378,12 +378,12 @@ export const FULL_MENU: MenuItem[] = [
 
 export const MENU_CATEGORIES = [
   { id: 'all', label: 'All Dishes', marathi: 'सर्व पदार्थ' },
-  { id: 'thali', label: 'Thalis & Combos', marathi: 'शाही थाळी' },
-  { id: 'nonveg', label: 'Kolhapuri Non-Veg', marathi: 'कोल्हापुरी मांसाहारी' },
-  { id: 'veg', label: 'Maharashtrian Veg', marathi: 'शाकाहारी जेवण' },
-  { id: 'snacks', label: 'Misal & Snacks', marathi: 'मिसळ आणि स्नॅक्स' },
   { id: 'breakfast', label: 'Breakfast', marathi: 'सकाळचा नाश्ता' },
-  { id: 'desserts', label: 'Desserts', marathi: 'गोडधोड व मिष्टान्न' },
+  { id: 'snacks', label: 'Snacks and Street Food', marathi: 'मिसळ आणि स्नॅक्स' },
+  { id: 'veg', label: 'Maharashtrian Vegetarian', marathi: 'महाराष्ट्रीयन शाकाहारी' },
+  { id: 'nonveg', label: 'Maharashtrian Non-Vegetarian', marathi: 'कोल्हापुरी मांसाहारी' },
+  { id: 'thali', label: 'Thalis and Combos', marathi: 'शाही थाळी आणि कॉम्बो' },
+  { id: 'desserts', label: 'Traditional Desserts', marathi: 'पारंपरिक गोडधोड' },
   { id: 'beverages', label: 'Beverages', marathi: 'थंडगार पेये' },
 ] as const;
 

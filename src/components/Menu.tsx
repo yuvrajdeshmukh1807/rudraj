@@ -7,6 +7,20 @@ export default function Menu() {
   const [dietaryFilter, setDietaryFilter] = useState<'all' | 'veg' | 'nonveg'>('all');
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Category dish counts for instant user feedback
+  const categoryCounts = useMemo(() => {
+    const counts: Record<string, number> = {
+      all: FULL_MENU.length,
+    };
+    MENU_CATEGORIES.forEach((cat) => {
+      if (cat.id !== 'all') {
+        counts[cat.id] = FULL_MENU.filter((d) => d.category === cat.id).length;
+      }
+    });
+    return counts;
+  }, []);
+
+  // Filtered dishes based on category, dietary preference, and search query
   const filteredDishes = useMemo(() => {
     return FULL_MENU.filter((dish) => {
       // Category check
@@ -16,9 +30,9 @@ export default function Menu() {
       // Dietary check
       if (dietaryFilter === 'veg' && !dish.isVeg) return false;
       if (dietaryFilter === 'nonveg' && dish.isVeg) return false;
-      // Search check
+      // Search check (name, Marathi name, or description)
       if (searchQuery.trim()) {
-        const q = searchQuery.toLowerCase();
+        const q = searchQuery.toLowerCase().trim();
         const matchName = dish.name.toLowerCase().includes(q);
         const matchMarathi = dish.marathiName.toLowerCase().includes(q);
         const matchDesc = dish.description.toLowerCase().includes(q);
@@ -27,6 +41,22 @@ export default function Menu() {
       return true;
     });
   }, [activeCategory, dietaryFilter, searchQuery]);
+
+  // Handle category switching with intelligent conflict resolution
+  const handleCategoryClick = (catId: string) => {
+    setActiveCategory(catId);
+    // If user selects non-veg category but dietary filter is pure veg, reset filter
+    if (catId === 'nonveg' && dietaryFilter === 'veg') {
+      setDietaryFilter('all');
+    }
+    // If user selects an exclusively vegetarian category while non-veg filter is on, reset filter
+    else if (
+      dietaryFilter === 'nonveg' &&
+      ['breakfast', 'snacks', 'veg', 'desserts', 'beverages'].includes(catId)
+    ) {
+      setDietaryFilter('all');
+    }
+  };
 
   const scrollToReservation = () => {
     const el = document.getElementById('reservation');
@@ -37,6 +67,8 @@ export default function Menu() {
       });
     }
   };
+
+  const activeCategoryObj = MENU_CATEGORIES.find((c) => c.id === activeCategory);
 
   return (
     <section className="menu-section section-pad bg-cream" id="menu" aria-labelledby="menu-title">
@@ -85,6 +117,7 @@ export default function Menu() {
           {/* Dietary Toggle */}
           <div className="diet-toggle" role="radiogroup" aria-label="Dietary filter">
             <button
+              id="diet-filter-all"
               className={`diet-toggle__btn ${dietaryFilter === 'all' ? 'active' : ''}`}
               onClick={() => setDietaryFilter('all')}
               role="radio"
@@ -93,6 +126,7 @@ export default function Menu() {
               All Items ({FULL_MENU.length})
             </button>
             <button
+              id="diet-filter-veg"
               className={`diet-toggle__btn ${dietaryFilter === 'veg' ? 'active' : ''}`}
               onClick={() => setDietaryFilter('veg')}
               role="radio"
@@ -104,6 +138,7 @@ export default function Menu() {
               <span>Pure Veg</span>
             </button>
             <button
+              id="diet-filter-nonveg"
               className={`diet-toggle__btn ${dietaryFilter === 'nonveg' ? 'active' : ''}`}
               onClick={() => setDietaryFilter('nonveg')}
               role="radio"
@@ -119,99 +154,134 @@ export default function Menu() {
 
         {/* Category Tabs */}
         <div className="category-tabs reveal" role="tablist" aria-label="Menu categories">
-          {MENU_CATEGORIES.map((cat) => (
-            <button
-              key={cat.id}
-              className={`category-tab ${activeCategory === cat.id ? 'active' : ''}`}
-              onClick={() => setActiveCategory(cat.id)}
-              role="tab"
-              aria-selected={activeCategory === cat.id}
-            >
-              <span className="category-tab__label">{cat.label}</span>
-              <span className="category-tab__marathi">{cat.marathi}</span>
-            </button>
-          ))}
+          {MENU_CATEGORIES.map((cat) => {
+            const isSelected = activeCategory === cat.id;
+            const count = categoryCounts[cat.id] ?? 0;
+            return (
+              <button
+                key={cat.id}
+                id={`menu-tab-${cat.id}`}
+                className={`category-tab ${isSelected ? 'active' : ''}`}
+                onClick={() => handleCategoryClick(cat.id)}
+                role="tab"
+                aria-selected={isSelected}
+                aria-controls="menu-items-container"
+              >
+                <span className="category-tab__label">
+                  <span>{cat.label}</span>
+                  <span className="category-tab__count">({count})</span>
+                </span>
+                <span className="category-tab__marathi">{cat.marathi}</span>
+              </button>
+            );
+          })}
         </div>
 
         {/* Menu Items Grid */}
-        {filteredDishes.length > 0 ? (
-          <div className="menu-grid">
-            {filteredDishes.map((dish, i) => (
-              <div
-                key={dish.id}
-                className="menu-item-card reveal"
-                style={{ transitionDelay: `${(i % 6) * 0.05}s` }}
-              >
-                <div className="menu-item-card__image-wrap">
-                  <img
-                    src={dish.image}
-                    alt={dish.name}
-                    className="menu-item-card__img"
-                    loading="lazy"
-                  />
-                  <div
-                    className={`diet-badge ${dish.isVeg ? 'diet-badge--veg' : 'diet-badge--nonveg'}`}
-                    title={dish.isVeg ? 'Vegetarian' : 'Non-Vegetarian'}
-                  >
-                    <span className="diet-badge__symbol" />
-                  </div>
-                </div>
-
-                <div className="menu-item-card__body">
-                  <div className="menu-item-card__header">
-                    <div>
-                      <h3 className="menu-item-card__title">{dish.name}</h3>
-                      <div className="menu-item-card__marathi">{dish.marathiName}</div>
-                    </div>
-                    <div className="menu-item-card__price">
-                      <span className="menu-item-card__currency">₹</span>
-                      <span>{dish.price}</span>
-                      <small className="menu-item-card__price-sample">*sample</small>
+        <div id="menu-items-container" aria-live="polite">
+          {filteredDishes.length > 0 ? (
+            <div className="menu-grid" key={`${activeCategory}-${dietaryFilter}`}>
+              {filteredDishes.map((dish, i) => (
+                <article
+                  key={dish.id}
+                  id={`dish-${dish.id}`}
+                  className="menu-item-card"
+                  style={{ animationDelay: `${(i % 8) * 0.03}s` }}
+                >
+                  <div className="menu-item-card__image-wrap">
+                    <img
+                      src={dish.image}
+                      alt={dish.name}
+                      className="menu-item-card__img"
+                      loading="lazy"
+                      onError={(e) => {
+                        const target = e.currentTarget;
+                        if (target.src !== '/restaurant-hero.jpg') {
+                          target.src = '/restaurant-hero.jpg';
+                        }
+                      }}
+                    />
+                    <div
+                      className={`diet-badge ${dish.isVeg ? 'diet-badge--veg' : 'diet-badge--nonveg'}`}
+                      title={dish.isVeg ? 'Vegetarian' : 'Non-Vegetarian'}
+                      aria-label={dish.isVeg ? 'Vegetarian Dish' : 'Non-Vegetarian Dish'}
+                    >
+                      <span className="diet-badge__symbol" />
                     </div>
                   </div>
 
-                  <p className="menu-item-card__desc">{dish.description}</p>
+                  <div className="menu-item-card__body">
+                    <div className="menu-item-card__header">
+                      <div>
+                        <h3 className="menu-item-card__title">{dish.name}</h3>
+                        <div className="menu-item-card__marathi">{dish.marathiName}</div>
+                      </div>
+                      <div className="menu-item-card__price">
+                        <span className="menu-item-card__currency">₹</span>
+                        <span>{dish.price}</span>
+                        <small className="menu-item-card__price-sample">*sample</small>
+                      </div>
+                    </div>
 
-                  <div className="menu-item-card__footer">
-                    <div className="menu-item-card__tags">
-                      {dish.spiceLevel && (
-                        <span className={`spice-pill spice-pill--${dish.spiceLevel.toLowerCase().replace(/\s+/g, '-')}`}>
-                          <Flame size={11} /> {dish.spiceLevel}
-                        </span>
-                      )}
-                      {dish.isSignature && (
-                        <span className="signature-pill">
-                          <Sparkles size={11} /> Special
-                        </span>
-                      )}
-                      {dish.serves && (
-                        <span className="serves-pill">
-                          {dish.serves}
-                        </span>
-                      )}
+                    <p className="menu-item-card__desc">{dish.description}</p>
+
+                    <div className="menu-item-card__footer">
+                      <div className="menu-item-card__tags">
+                        {dish.spiceLevel && (
+                          <span className={`spice-pill spice-pill--${dish.spiceLevel.toLowerCase().replace(/\s+/g, '-')}`}>
+                            <Flame size={11} /> {dish.spiceLevel}
+                          </span>
+                        )}
+                        {dish.isSignature && (
+                          <span className="signature-pill">
+                            <Sparkles size={11} /> Special
+                          </span>
+                        )}
+                        {dish.serves && (
+                          <span className="serves-pill">
+                            {dish.serves}
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <div className="menu-empty text-center" role="status">
+              <UtensilsCrossed size={48} className="menu-empty__icon" />
+              <h3 className="menu-empty__title">No dishes matched your selection</h3>
+              <p className="menu-empty__text">
+                {searchQuery
+                  ? `No items found matching "${searchQuery}" in ${activeCategoryObj?.label || 'this category'}.`
+                  : `No dishes available under the current filter combination in ${activeCategoryObj?.label || 'this category'}.`}
+              </p>
+              <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', marginTop: '1.25rem', flexWrap: 'wrap' }}>
+                {searchQuery && (
+                  <button className="btn btn--outline-gold" onClick={() => setSearchQuery('')}>
+                    Clear Search
+                  </button>
+                )}
+                {dietaryFilter !== 'all' && (
+                  <button className="btn btn--outline-gold" onClick={() => setDietaryFilter('all')}>
+                    Show Both Veg & Non-Veg
+                  </button>
+                )}
+                <button
+                  className="btn btn--primary"
+                  onClick={() => {
+                    setActiveCategory('all');
+                    setDietaryFilter('all');
+                    setSearchQuery('');
+                  }}
+                >
+                  View All Dishes ({FULL_MENU.length})
+                </button>
               </div>
-            ))}
-          </div>
-        ) : (
-          <div className="menu-empty text-center">
-            <UtensilsCrossed size={48} className="menu-empty__icon" />
-            <h3 className="menu-empty__title">No dishes matched your filter</h3>
-            <p className="menu-empty__text">Try adjusting your search query or switching category tabs.</p>
-            <button
-              className="btn btn--outline-gold"
-              onClick={() => {
-                setActiveCategory('all');
-                setDietaryFilter('all');
-                setSearchQuery('');
-              }}
-            >
-              Reset Filters
-            </button>
-          </div>
-        )}
+            </div>
+          )}
+        </div>
 
         {/* Bottom Banner */}
         <div className="menu-cta-banner reveal">
@@ -221,7 +291,7 @@ export default function Menu() {
               We arrange special Shahi Maharashtrian Pangat (पंगत) feasts for family functions, birthdays, and celebrations.
             </p>
           </div>
-          <button className="btn btn--primary" onClick={scrollToReservation}>
+          <button className="btn btn--primary" onClick={scrollToReservation} id="menu-reserve-family-btn">
             <CalendarDays size={16} />
             <span>Reserve Family Table</span>
           </button>
