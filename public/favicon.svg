@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Background circle -->
+  <circle cx="32" cy="32" r="32" fill="#1a1f2e"/>
+  <!-- Gold mountain shape -->
+  <polygon points="32,10 48,42 16,42" fill="none" stroke="#C9961A" stroke-width="2.5" stroke-linejoin="round"/>
+  <!-- Smaller inner peak -->
+  <polygon points="32,18 42,38 22,38" fill="#C9961A" fill-opacity="0.15"/>
+  <!-- Horizontal gold line -->
+  <line x1="16" y1="46" x2="48" y2="46" stroke="#C9961A" stroke-width="2" stroke-linecap="round"/>
+  <!-- HR letters -->
+  <text x="32" y="57" font-family="Georgia, serif" font-size="8" font-weight="700" fill="#C9961A" text-anchor="middle" letter-spacing="1">HR</text>
+</svg>
