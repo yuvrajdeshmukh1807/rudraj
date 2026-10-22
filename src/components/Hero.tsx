@@ -128,11 +128,13 @@ export default function Hero() {
               </label>
               <input
                 id="quick-date"
+                name="quickDate"
                 type="date"
                 value={date}
                 min={today}
                 onChange={(e) => setDate(e.target.value)}
                 className="booking-bar__input"
+                autoComplete="off"
               />
             </div>
 
@@ -143,9 +145,11 @@ export default function Hero() {
               </label>
               <select
                 id="quick-meal"
+                name="quickMeal"
                 value={mealTime}
                 onChange={(e) => setMealTime(e.target.value as 'lunch' | 'dinner')}
                 className="booking-bar__input"
+                autoComplete="off"
               >
                 <option value="lunch">Lunch (11:30 am to 3:30 pm)</option>
                 <option value="dinner">Dinner (7:00 pm to 11:00 pm)</option>
@@ -159,9 +163,11 @@ export default function Hero() {
               </label>
               <select
                 id="quick-guests"
+                name="quickGuests"
                 value={guests}
                 onChange={(e) => setGuests(e.target.value)}
                 className="booking-bar__input"
+                autoComplete="off"
               >
                 <option value="1">1 Person</option>
                 <option value="2">2 Persons</option>

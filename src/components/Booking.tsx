@@ -246,7 +246,9 @@ export default function Booking() {
                       <User size={16} className="input-icon" />
                       <input
                         id="res-name"
+                        name="name"
                         type="text"
+                        autoComplete="name"
                         className={`form-input ${errors.name ? 'error' : ''}`}
                         placeholder="e.g., Sachin Deshmukh"
                         value={form.name}
@@ -266,7 +268,9 @@ export default function Booking() {
                       <Phone size={16} className="input-icon" />
                       <input
                         id="res-phone"
+                        name="phone"
                         type="tel"
+                        autoComplete="tel"
                         className={`form-input ${errors.phone ? 'error' : ''}`}
                         placeholder="+91 98220 00000"
                         value={form.phone}
@@ -286,7 +290,9 @@ export default function Booking() {
                       <Mail size={16} className="input-icon" />
                       <input
                         id="res-email"
+                        name="email"
                         type="email"
+                        autoComplete="email"
                         className={`form-input ${errors.email ? 'error' : ''}`}
                         placeholder="sachin@example.com"
                         value={form.email}
@@ -305,6 +311,8 @@ export default function Booking() {
                       <Users size={16} className="input-icon" />
                       <select
                         id="res-guests"
+                        name="guests"
+                        autoComplete="off"
                         className="form-input"
                         value={form.guests}
                         onChange={(e) => setForm({ ...form, guests: e.target.value })}
@@ -331,7 +339,9 @@ export default function Booking() {
                       <CalendarDays size={16} className="input-icon" />
                       <input
                         id="res-date"
+                        name="date"
                         type="date"
+                        autoComplete="off"
                         min={today}
                         className={`form-input ${errors.date ? 'error' : ''}`}
                         value={form.date}
@@ -351,6 +361,8 @@ export default function Booking() {
                       <Clock size={16} className="input-icon" />
                       <select
                         id="res-time"
+                        name="timeSlot"
+                        autoComplete="off"
                         className="form-input"
                         value={form.timeSlot}
                         onChange={(e) => setForm({ ...form, timeSlot: e.target.value })}
@@ -377,6 +389,8 @@ export default function Booking() {
                       <UtensilsCrossed size={16} className="input-icon" />
                       <select
                         id="res-seating"
+                        name="seatingPreference"
+                        autoComplete="off"
                         className="form-input"
                         value={form.seatingPreference}
                         onChange={(e) => setForm({ ...form, seatingPreference: e.target.value })}
@@ -398,6 +412,8 @@ export default function Booking() {
                       <MessageSquare size={16} className="input-icon" style={{ top: 14 }} />
                       <textarea
                         id="res-requests"
+                        name="requests"
+                        autoComplete="off"
                         rows={3}
                         className="form-input form-textarea"
                         placeholder="e.g. Birthday celebration, special Kolhapuri mutton thali pre-order, high chair needed for child..."

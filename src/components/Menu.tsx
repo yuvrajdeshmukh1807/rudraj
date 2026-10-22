@@ -61,7 +61,10 @@ export default function Menu() {
           <div className="menu-search">
             <Search size={18} className="menu-search__icon" />
             <input
-              type="text"
+              id="menu-search-input"
+              name="menuSearch"
+              type="search"
+              autoComplete="off"
               placeholder="Search dishes (e.g., Misal, Rassa, Pithla, Bhakri, Puran Poli)..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
