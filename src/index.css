@@ -118,6 +118,7 @@ html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
   font-size: 16px;
+  overflow-x: hidden;
 }
 
 body {
@@ -127,6 +128,12 @@ body {
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+#root, #app {
+  width: 100%;
   overflow-x: hidden;
 }
 
@@ -160,6 +167,12 @@ ul, ol {
   padding-inline: 1.5rem;
 }
 
+@media (max-width: 480px) {
+  .container {
+    padding-inline: 1rem;
+  }
+}
+
 @media (min-width: 768px) {
   .container {
     padding-inline: 2rem;
@@ -169,6 +182,12 @@ ul, ol {
 /* ── Consistent Section Spacing ───────────────────────────── */
 .section-pad {
   padding-block: clamp(4rem, 6.5vw, 6rem);
+}
+
+@media (max-width: 640px) {
+  .section-pad {
+    padding-block: clamp(2.75rem, 8vw, 3.75rem);
+  }
 }
 
 .bg-cream {
@@ -185,6 +204,12 @@ ul, ol {
   max-width: 680px;
   margin-inline: auto;
   margin-bottom: clamp(2.5rem, 4vw, 3.5rem);
+}
+
+@media (max-width: 640px) {
+  .section-header {
+    margin-bottom: 2rem;
+  }
 }
 
 .section-header.left-aligned {
@@ -215,15 +240,26 @@ ul, ol {
   opacity: 0.8;
 }
 
+@media (max-width: 480px) {
+  .section-eyebrow {
+    font-size: var(--fs-xs);
+    letter-spacing: 0.08em;
+  }
+  .section-eyebrow::before,
+  .section-eyebrow::after {
+    width: 14px;
+  }
+}
+
 .section-header.left-aligned .section-eyebrow::before {
   display: none;
 }
 
 .section-title {
   font-family: var(--ff-serif);
-  font-size: clamp(2rem, 3.6vw, 2.75rem);
+  font-size: clamp(1.65rem, 5.5vw, 2.75rem);
   font-weight: 700;
-  line-height: 1.2;
+  line-height: 1.22;
   color: var(--clr-text-dark);
   margin-bottom: 0.875rem;
   letter-spacing: -0.01em;
@@ -245,6 +281,13 @@ ul, ol {
   font-size: 1.05rem;
   color: var(--clr-text-mid);
   line-height: 1.75;
+}
+
+@media (max-width: 640px) {
+  .section-desc {
+    font-size: 0.95rem;
+    line-height: 1.65;
+  }
 }
 
 .section-desc.center {
@@ -498,6 +541,14 @@ ul, ol {
   transition: border-color var(--trans-fast), box-shadow var(--trans-fast);
   outline: none;
   box-sizing: border-box;
+}
+
+@media (max-width: 640px) {
+  .input-wrap .form-input,
+  .input-wrap select.form-input,
+  .input-wrap .form-textarea {
+    font-size: 16px !important;
+  }
 }
 
 .input-wrap select.form-input {
